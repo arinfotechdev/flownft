@@ -10,8 +10,14 @@ pub contract StrudyItems: NonFungibleToken {
     pub event ContractInitialized()
     pub event Withdraw(id: UInt64, from: Address?)
     pub event Deposit(id: UInt64, to: Address?)
-    pub event Minted(id: UInt64, typeID: UInt64, tokenURI: String, tokenTitle: String, 
-    tokenDescription: String, artist: String, secondaryRoyalty: String, dateMinted: String, platformMintedOn: String)
+    pub event Minted(id: UInt64, 
+    	typeID: UInt64, 
+		tokenURI: String, 
+		tokenTitle: String, 
+		tokenDescription: String,
+		artist: String, 
+		secondaryRoyalty: String, 
+		platformMintedOn: String)
 
     // Named Paths
     //
@@ -42,24 +48,27 @@ pub contract StrudyItems: NonFungibleToken {
         pub let artist: String
         // Secondary Royalty
         pub let secondaryRoyalty: String
-        // Date Minted
-        pub let dateMinted: String
         // Platform Minted On
         pub let platformMintedOn: String
 
         // initializer
         //
-        init(initID: UInt64, initTypeID: UInt64, initTokenURI: String, initTokenTitle: String, initTokenDescription: String, 
-        initArtist: String, initSecondaryRoyalty: String, initDateMinted: String, initPlatformMintedOn: String) {
-            self.id = initID
-            self.typeID = initTypeID
-            self.tokenURI = initTokenURI
-            self.tokenTitle = initTokenTitle
-            self.tokenDescription = initTokenDescription
-            self.artist = initArtist
-            self.secondaryRoyalty = initSecondaryRoyalty
-            self.dateMinted = initDateMinted
-            self.platformMintedOn = initPlatformMintedOn
+        init(initID: UInt64, 
+        	initTypeID: UInt64, 
+        	initTokenURI: String, 
+        	initTokenTitle: String, 
+        	initTokenDescription: String, 
+        	initArtist: String, 
+        	initSecondaryRoyalty: String,
+        	initPlatformMintedOn: String) {
+	   			self.id = initID
+	            self.typeID = initTypeID
+	            self.tokenURI = initTokenURI
+	            self.tokenTitle = initTokenTitle
+	            self.tokenDescription = initTokenDescription
+	            self.artist = initArtist
+	            self.secondaryRoyalty = initSecondaryRoyalty
+	            self.platformMintedOn = initPlatformMintedOn
         }
     }
 
@@ -175,16 +184,34 @@ pub contract StrudyItems: NonFungibleToken {
         // Mints a new NFT with a new ID
 		// and deposit it in the recipients collection using their collection reference
         //
-		pub fun mintNFT(recipient: &{NonFungibleToken.CollectionPublic}, typeID: UInt64, tokenURI: String, tokenTitle: String, tokenDescription: String, 
-		 artist: String, secondaryRoyalty: String, dateMinted: String, platformMintedOn: String) {
-            emit Minted(id: StrudyItems.totalSupply, typeID: typeID, tokenURI: tokenURI, tokenTitle: tokenTitle, tokenDescription: tokenDescription,
-            artist: artist, secondaryRoyalty: secondaryRoyalty, dateMinted: dateMinted, platformMintedOn: platformMintedOn)
+		pub fun mintNFT(recipient: &{NonFungibleToken.CollectionPublic}, 
+			typeID: UInt64, 
+			tokenURI: String, 
+			tokenTitle: String, 
+			tokenDescription: String, 
+		 	artist: String, 
+		 	secondaryRoyalty: String,  
+		 	platformMintedOn: String) {
+            StrudyItems.totalSupply = StrudyItems.totalSupply + (1 as UInt64)
+            emit Minted(id: StrudyItems.totalSupply, 
+            	typeID: typeID, 
+            	tokenURI: tokenURI, 
+            	tokenTitle: tokenTitle, 
+            	tokenDescription: tokenDescription,
+            	artist: artist, 
+            	secondaryRoyalty: secondaryRoyalty, 
+            	platformMintedOn: platformMintedOn)
 
 			// deposit it in the recipient's account using their reference
-			recipient.deposit(token: <-create StrudyItems.NFT(initID: StrudyItems.totalSupply, initTypeID: typeID, initTokenURI: tokenURI,
-			initTokenTitle: tokenTitle,initTokenDescription: tokenDescription,initArtist: artist,initSecondaryRoyalty: secondaryRoyalty
-			,initDateMinted: dateMinted,initPlatformMintedOn: platformMintedOn))
-            StrudyItems.totalSupply = StrudyItems.totalSupply + (1 as UInt64)
+			recipient.deposit(token: <-create StrudyItems.NFT(
+				initID: StrudyItems.totalSupply, 
+				initTypeID: typeID, 
+				initTokenURI: tokenURI,
+				initTokenTitle: tokenTitle,
+				initTokenDescription: tokenDescription,
+				initArtist: artist,
+				initSecondaryRoyalty: secondaryRoyalty,
+				initPlatformMintedOn: platformMintedOn))
 		}
 	}
 
@@ -208,10 +235,9 @@ pub contract StrudyItems: NonFungibleToken {
     //
 	init() {
         // Set our named paths
-        //FIXME: REMOVE SUFFIX BEFORE RELEASE
-        self.CollectionStoragePath = /storage/StrudyItemsCollection001
-        self.CollectionPublicPath = /public/StrudyItemsCollection001
-        self.MinterStoragePath = /storage/StrudyItemsMinter001
+        self.CollectionStoragePath = /storage/StrudyItemsCollection
+        self.CollectionPublicPath = /public/StrudyItemsCollection
+        self.MinterStoragePath = /storage/StrudyItemsMinter
 
         // Initialize the total supply
         self.totalSupply = 0

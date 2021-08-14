@@ -6,14 +6,19 @@ import StrudyItems from "../../contracts/StrudyItems.cdc"
 // It must be run with the account that has the minter resource
 // stored at path /storage/NFTMinter.
 
-transaction(recipient: Address, typeID: UInt64, tokenURI: String, tokenTitle: String, 
-    tokenDescription: String, artist: String, secondaryRoyalty: String, dateMinted: String, platformMintedOn: String) {
+transaction(recipient: Address, 
+	typeID: UInt64, 
+	tokenURI: String, 
+	tokenTitle: String, 
+    tokenDescription: String, 
+    artist: String, 
+    secondaryRoyalty: String, 
+    platformMintedOn: String) {
     
     // local variable for storing the minter reference
     let minter: &StrudyItems.NFTMinter
 
     prepare(signer: AuthAccount) {
-
         // borrow a reference to the NFTMinter resource in storage
         self.minter = signer.borrow<&StrudyItems.NFTMinter>(from: StrudyItems.MinterStoragePath)
             ?? panic("Could not borrow a reference to the NFT minter")
@@ -30,7 +35,13 @@ transaction(recipient: Address, typeID: UInt64, tokenURI: String, tokenTitle: St
             ?? panic("Could not get receiver reference to the NFT Collection")
 
         // mint the NFT and deposit it to the recipient's collection
-        self.minter.mintNFT(recipient: receiver, typeID: typeID, tokenURI: tokenURI, tokenTitle: tokenTitle, tokenDescription: tokenDescription,
-            artist: artist, secondaryRoyalty: secondaryRoyalty, dateMinted: dateMinted, platformMintedOn: platformMintedOn)
+        self.minter.mintNFT(recipient: receiver, 
+        	typeID: typeID, 
+        	tokenURI: tokenURI, 
+        	tokenTitle: tokenTitle, 
+        	tokenDescription: tokenDescription,
+            artist: artist, 
+            secondaryRoyalty: secondaryRoyalty, 
+            platformMintedOn: platformMintedOn)
     } 
 }

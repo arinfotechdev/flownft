@@ -1,9 +1,9 @@
 import NonFungibleToken from "./NonFungibleToken.cdc"
 
-// StrudyItems
-// NFT items for Strudy!
+// SturdyItems
+// NFT items for Sturdy!
 //
-pub contract StrudyItems: NonFungibleToken {
+pub contract SturdyItems: NonFungibleToken {
 
     // Events
     //
@@ -26,12 +26,12 @@ pub contract StrudyItems: NonFungibleToken {
     pub let MinterStoragePath: StoragePath
 
     // totalSupply
-    // The total number of StrudyItems that have been minted
+    // The total number of SturdyItems that have been minted
     //
     pub var totalSupply: UInt64
 
     // NFT
-    // A Strudy Item as an NFT
+    // A Sturdy Item as an NFT
     //
     pub resource NFT: NonFungibleToken.INFT {
         // The token's ID
@@ -72,27 +72,27 @@ pub contract StrudyItems: NonFungibleToken {
         }
     }
 
-    // This is the interface that users can cast their StrudyItems Collection as
-    // to allow others to deposit StrudyItems into their Collection. It also allows for reading
-    // the details of StrudyItems in the Collection.
-    pub resource interface StrudyItemsCollectionPublic {
+    // This is the interface that users can cast their SturdyItems Collection as
+    // to allow others to deposit SturdyItems into their Collection. It also allows for reading
+    // the details of SturdyItems in the Collection.
+    pub resource interface SturdyItemsCollectionPublic {
         pub fun deposit(token: @NonFungibleToken.NFT)
         pub fun getIDs(): [UInt64]
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT
-        pub fun borrowStrudyItem(id: UInt64): &StrudyItems.NFT? {
+        pub fun borrowSturdyItem(id: UInt64): &SturdyItems.NFT? {
             // If the result isn't nil, the id of the returned reference
             // should be the same as the argument to the function
             post {
                 (result == nil) || (result?.id == id):
-                    "Cannot borrow StrudyItem reference: The ID of the returned reference is incorrect"
+                    "Cannot borrow SturdyItem reference: The ID of the returned reference is incorrect"
             }
         }
     }
 
     // Collection
-    // A collection of StrudyItem NFTs owned by an account
+    // A collection of SturdyItem NFTs owned by an account
     //
-    pub resource Collection: StrudyItemsCollectionPublic, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
+    pub resource Collection: SturdyItemsCollectionPublic, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
         // dictionary of NFT conforming tokens
         // NFT is a resource type with an `UInt64` ID field
         //
@@ -114,7 +114,7 @@ pub contract StrudyItems: NonFungibleToken {
         // and adds the ID to the id array
         //
         pub fun deposit(token: @NonFungibleToken.NFT) {
-            let token <- token as! @StrudyItems.NFT
+            let token <- token as! @SturdyItems.NFT
 
             let id: UInt64 = token.id
 
@@ -141,15 +141,15 @@ pub contract StrudyItems: NonFungibleToken {
             return &self.ownedNFTs[id] as &NonFungibleToken.NFT
         }
 
-        // borrowStrudyItem
-        // Gets a reference to an NFT in the collection as a StrudyItem,
+        // borrowSturdyItem
+        // Gets a reference to an NFT in the collection as a SturdyItem,
         // exposing all of its fields (including the typeID).
-        // This is safe as there are no functions that can be called on the StrudyItem.
+        // This is safe as there are no functions that can be called on the SturdyItem.
         //
-        pub fun borrowStrudyItem(id: UInt64): &StrudyItems.NFT? {
+        pub fun borrowSturdyItem(id: UInt64): &SturdyItems.NFT? {
             if self.ownedNFTs[id] != nil {
                 let ref = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT
-                return ref as! &StrudyItems.NFT
+                return ref as! &SturdyItems.NFT
             } else {
                 return nil
             }
@@ -192,8 +192,8 @@ pub contract StrudyItems: NonFungibleToken {
 		 	artist: String, 
 		 	secondaryRoyalty: String,  
 		 	platformMintedOn: String) {
-            StrudyItems.totalSupply = StrudyItems.totalSupply + (1 as UInt64)
-            emit Minted(id: StrudyItems.totalSupply, 
+            SturdyItems.totalSupply = SturdyItems.totalSupply + (1 as UInt64)
+            emit Minted(id: SturdyItems.totalSupply, 
             	typeID: typeID, 
             	tokenURI: tokenURI, 
             	tokenTitle: tokenTitle, 
@@ -203,8 +203,8 @@ pub contract StrudyItems: NonFungibleToken {
             	platformMintedOn: platformMintedOn)
 
 			// deposit it in the recipient's account using their reference
-			recipient.deposit(token: <-create StrudyItems.NFT(
-				initID: StrudyItems.totalSupply, 
+			recipient.deposit(token: <-create SturdyItems.NFT(
+				initID: SturdyItems.totalSupply, 
 				initTypeID: typeID, 
 				initTokenURI: tokenURI,
 				initTokenTitle: tokenTitle,
@@ -216,28 +216,28 @@ pub contract StrudyItems: NonFungibleToken {
 	}
 
     // fetch
-    // Get a reference to a StrudyItem from an account's Collection, if available.
-    // If an account does not have a StrudyItems.Collection, panic.
+    // Get a reference to a SturdyItem from an account's Collection, if available.
+    // If an account does not have a SturdyItems.Collection, panic.
     // If it has a collection but does not contain the itemId, return nil.
     // If it has a collection and that collection contains the itemId, return a reference to that.
     //
-    pub fun fetch(_ from: Address, itemID: UInt64): &StrudyItems.NFT? {
+    pub fun fetch(_ from: Address, itemID: UInt64): &SturdyItems.NFT? {
         let collection = getAccount(from)
-            .getCapability(StrudyItems.CollectionPublicPath)!
-            .borrow<&StrudyItems.Collection{StrudyItems.StrudyItemsCollectionPublic}>()
+            .getCapability(SturdyItems.CollectionPublicPath)!
+            .borrow<&SturdyItems.Collection{SturdyItems.SturdyItemsCollectionPublic}>()
             ?? panic("Couldn't get collection")
-        // We trust StrudyItems.Collection.borowStrudyItem to get the correct itemID
+        // We trust SturdyItems.Collection.borowSturdyItem to get the correct itemID
         // (it checks it before returning it).
-        return collection.borrowStrudyItem(id: itemID)
+        return collection.borrowSturdyItem(id: itemID)
     }
 
     // initializer
     //
 	init() {
         // Set our named paths
-        self.CollectionStoragePath = /storage/StrudyItemsCollection
-        self.CollectionPublicPath = /public/StrudyItemsCollection
-        self.MinterStoragePath = /storage/StrudyItemsMinter
+        self.CollectionStoragePath = /storage/SturdyItemsCollection
+        self.CollectionPublicPath = /public/SturdyItemsCollection
+        self.MinterStoragePath = /storage/SturdyItemsMinter
 
         // Initialize the total supply
         self.totalSupply = 0

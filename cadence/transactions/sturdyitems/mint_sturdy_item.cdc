@@ -1,5 +1,5 @@
 import NonFungibleToken from "../../contracts/NonFungibleToken.cdc"
-import StrudyItems from "../../contracts/StrudyItems.cdc"
+import SturdyItems from "../../contracts/SturdyItems.cdc"
 
 // This transction uses the NFTMinter resource to mint a new NFT.
 //
@@ -16,11 +16,11 @@ transaction(recipient: Address,
     platformMintedOn: String) {
     
     // local variable for storing the minter reference
-    let minter: &StrudyItems.NFTMinter
+    let minter: &SturdyItems.NFTMinter
 
     prepare(signer: AuthAccount) {
         // borrow a reference to the NFTMinter resource in storage
-        self.minter = signer.borrow<&StrudyItems.NFTMinter>(from: StrudyItems.MinterStoragePath)
+        self.minter = signer.borrow<&SturdyItems.NFTMinter>(from: SturdyItems.MinterStoragePath)
             ?? panic("Could not borrow a reference to the NFT minter")
     }
 
@@ -30,7 +30,7 @@ transaction(recipient: Address,
 
         // borrow the recipient's public NFT collection reference
         let receiver = recipient
-            .getCapability(StrudyItems.CollectionPublicPath)!
+            .getCapability(SturdyItems.CollectionPublicPath)!
             .borrow<&{NonFungibleToken.CollectionPublic}>()
             ?? panic("Could not get receiver reference to the NFT Collection")
 

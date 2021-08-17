@@ -1,7 +1,7 @@
 import NonFungibleToken from "../../contracts/NonFungibleToken.cdc"
-import StrudyItems from "../../contracts/StrudyItems.cdc"
+import SturdyItems from "../../contracts/SturdyItems.cdc"
 
-// This transaction transfers a Strudy Item from one account to another.
+// This transaction transfers a Sturdy Item from one account to another.
 
 transaction(recipient: Address, withdrawID: UInt64) {
     prepare(signer: AuthAccount) {
@@ -10,11 +10,11 @@ transaction(recipient: Address, withdrawID: UInt64) {
         let recipient = getAccount(recipient)
 
         // borrow a reference to the signer's NFT collection
-        let collectionRef = signer.borrow<&StrudyItems.Collection>(from: StrudyItems.CollectionStoragePath)
+        let collectionRef = signer.borrow<&SturdyItems.Collection>(from: SturdyItems.CollectionStoragePath)
             ?? panic("Could not borrow a reference to the owner's collection")
 
         // borrow a public reference to the receivers collection
-        let depositRef = recipient.getCapability(StrudyItems.CollectionPublicPath)!.borrow<&{NonFungibleToken.CollectionPublic}>()!
+        let depositRef = recipient.getCapability(SturdyItems.CollectionPublicPath)!.borrow<&{NonFungibleToken.CollectionPublic}>()!
 
         // withdraw the NFT from the owner's collection
         let nft <- collectionRef.withdraw(withdrawID: withdrawID)
